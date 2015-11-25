@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bundles>
+    <bundle>
+        <bundle_description>
+            1gb: validity 1 week
+            *200*55#
+        </bundle_description>
+
+        <bundle_value>
+            *200*55#
+        </bundle_value>
+    </bundle>
+
+    <bundle>
+        <bundle_description>
+            1gb: validity 1 day
+            *200*5#
+        </bundle_description>
+
+        <bundle_value>
+            *200*5#
+        </bundle_value>
+    </bundle>
+
+    <bundle>
+        <bundle_description>
+            2gb: validity 2 weeks
+            *200*554#
+        </bundle_description>
+
+        <bundle_value>
+            *200*554#
+        </bundle_value>
+    </bundle>
+
+
+</bundles>
+
+
