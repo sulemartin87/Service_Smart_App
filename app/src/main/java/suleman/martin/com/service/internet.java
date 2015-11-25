@@ -10,8 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
-import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.List;
 
 public class internet extends AppCompatActivity
@@ -31,7 +28,6 @@ public class internet extends AppCompatActivity
     List<bundles> employees = null;
     List<bundle_values> employee1 = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -39,70 +35,8 @@ public class internet extends AppCompatActivity
         setContentView(R.layout.activity_internet);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        show_bundles();
         simStuff();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    public void show_bundles()
-    {
-        internet_list= (ListView) findViewById(R.id.main_bundle_list);
-        try
-        {
-            XMLPullParserHandler parser = new XMLPullParserHandler();
-            employees = parser.parse(getAssets().open("bundles.xml"));
-            ArrayAdapter<bundles> adapter =
-                    new ArrayAdapter<bundles>(this, android.R.layout.simple_list_item_1,employees);
-            internet_list.setAdapter(adapter);
-            internet_list.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    System.out.println(position);
-                    System.out.println(bruh(position));
-                    String bun_val = bruh(position);
-                    //System.out.println(employees.get(position));
-                    intent.setData(Uri.parse("tel:" + Uri.encode(bun_val)));
-                    startActivity(intent);
-                }
-            });
-
-        }catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        registerForContextMenu(internet_list);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-        //menu.setHeaderTitle(main_list[info.position]);
-        //String lister = main_list[info.position];
-        menu.add(0, v.getId(), 0, "Call");
-        menu.add(0, v.getId(), 0, "SMS");
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
-     if(item.getTitle()=="Call")
-        {
-            Toast.makeText(getApplicationContext(),"calling code", Toast.LENGTH_LONG).show();
-        }
-        else if(item.getTitle()=="SMS")
-        {
-            Toast.makeText(getApplicationContext(),"sending sms code",Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            return false;
-        }
-        return true;
     }
 
     public void simStuff()
@@ -129,6 +63,7 @@ public class internet extends AppCompatActivity
                 String mi = tManager.getSimOperatorName();
                 if(mi.equals("TNM"))
                 {
+                    show_bundles(mi);
                     actionBar.setTitle(mi);
                     actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#70C045")));
                     if (android.os.Build.VERSION.SDK_INT >= 21)
@@ -142,6 +77,7 @@ public class internet extends AppCompatActivity
                 else if(mi.equals("airtel"))
                 {
                     actionBar.setTitle(mi);
+                    show_bundles(mi);
                     actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#DB030C")));
                     if (android.os.Build.VERSION.SDK_INT >= 21)
                     {
@@ -157,19 +93,49 @@ public class internet extends AppCompatActivity
                 break;
         }
     }
+    public void show_bundles(final String carrier)
+    {
+        internet_list= (ListView) findViewById(R.id.main_bundle_list);
+        try
+        {
+            XMLPullParserHandler parser = new XMLPullParserHandler();
+            employees = parser.parse(getAssets().open(carrier + ".xml"));
+            ArrayAdapter<bundles> adapter =
+                    new ArrayAdapter<bundles>(this, android.R.layout.simple_list_item_1,employees);
+            internet_list.setAdapter(adapter);
+            internet_list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    System.out.println(position);
+                    System.out.println(bruh(position,carrier));
+                    String bun_val = bruh(position,carrier);
+                    intent.setData(Uri.parse("tel:" + Uri.encode(bun_val)));
+                    startActivity(intent);
+                }
+            });
 
-    public String bruh(int posititon) {
+        }catch(java.io.IOException  e)
+        {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error XML file not found" ,Toast.LENGTH_LONG).show();
+        }
+
+    }
+    public String bruh(int posititon,String carrier)
+    {
         try
         {
             XMLPullParserHandler1 parser1 = new XMLPullParserHandler1();
-            employee1 = parser1.parse(getAssets().open("bundles.xml"));
-
-        }catch(Exception e) {
-
+            employee1 = parser1.parse(getAssets().open(carrier+".xml"));
+        }catch(Exception e)
+        {
+            Toast.makeText(getApplicationContext(), "Error XML file not found" ,Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         }
 
         return String.valueOf(employee1.get(posititon));
     }
-
 
 }

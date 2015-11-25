@@ -79,8 +79,4 @@ public class XMLPullParserHandler
         return bundle_vals;
     }
 
-
-
-
-
 }
