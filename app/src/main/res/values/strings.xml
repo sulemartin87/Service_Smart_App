@@ -2,4 +2,10 @@
     <string name="app_name">Service</string>
     <string name="title_activity_internet">internet</string>
     <string name="title_activity_services">services</string>
+
+    <string-array name="carriers">
+        <item>airtel</item>
+        <item>TNM</item>
+    </string-array>
+
 </resources>

@@ -23,9 +23,9 @@ public class MainActivity extends AppCompatActivity
     ArrayAdapter<String> adapter;
 
     String[] main_list = new String[]
-    {
-     "services","internet"
-    };
+            {
+                    "services","internet"
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity
     {
         first_list_view = (ListView) findViewById(R.id.main_listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>
-        (this, android.R.layout.simple_list_item_1, android.R.id.text1, main_list);
+                (this, android.R.layout.simple_list_item_1, android.R.id.text1, main_list);
         first_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -66,8 +66,7 @@ public class MainActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         TelephonyManager tManager = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         int simState = tManager.getSimState();
-        switch (simState)
-        {
+        switch (simState) {
             case TelephonyManager.SIM_STATE_ABSENT:
                 actionBar.setTitle("no sim card");
                 break;
@@ -79,13 +78,13 @@ public class MainActivity extends AppCompatActivity
                 break;
             case TelephonyManager.SIM_STATE_READY:
                 String mi = tManager.getSimOperatorName();
+                System.out.println(mi);
                 if(mi.equals("TNM"))
                 {
                     actionBar.setTitle(mi);
                     actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#70C045")));
 
-                    if (android.os.Build.VERSION.SDK_INT >= 21)
-                    {
+                    if (android.os.Build.VERSION.SDK_INT >= 21) {
                         Window statusBar = getWindow();
                         statusBar.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                         statusBar.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -93,12 +92,11 @@ public class MainActivity extends AppCompatActivity
                     }
 
                 }
-                else if(mi.equals("airtel"))
+                else if(mi.equals("Airtel MW"))
                 {
                     actionBar.setTitle(mi);
                     actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#DB030C")));
-                    if (android.os.Build.VERSION.SDK_INT >= 21)
-                    {
+                    if (android.os.Build.VERSION.SDK_INT >= 21) {
                         Window statusBar = getWindow();
                         statusBar.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                         statusBar.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

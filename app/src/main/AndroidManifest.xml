@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+        <uses-sdk android:minSdkVersion="12"></uses-sdk>
         <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,5 +35,5 @@
                 android:value="suleman.martin.com.service.MainActivity" />
         </activity>
     </application>
-
+<uses-sdk android:minSdkVersion="12"></uses-sdk>
 </manifest>

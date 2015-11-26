@@ -7,19 +7,19 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XMLPullParserHandler1
+public class XMLPullParserHandler_bundle_value
 {
 
-  List<bundle_values> bundle_vals;
-  private bundle_values bundle_class;
+  List<bundle_values_class> bundle_vals;
+  private bundle_values_class bundle_class;
   private String text;
 
-  public XMLPullParserHandler1()
+  public XMLPullParserHandler_bundle_value()
   {
-      bundle_vals = new ArrayList<bundle_values>();
+      bundle_vals = new ArrayList<bundle_values_class>();
   }
 
-  public List<bundle_values> parse(InputStream is)
+  public List<bundle_values_class> parse(InputStream is)
   {
 
       XmlPullParserFactory factory = null;
@@ -43,7 +43,7 @@ public class XMLPullParserHandler1
 
                       if(tagname.equalsIgnoreCase("bundle"))
                       {
-                          bundle_class = new bundle_values();
+                          bundle_class = new bundle_values_class();
                       }
                       break;
 

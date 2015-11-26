@@ -10,19 +10,19 @@ import java.util.List;
 /**
  * Created by sulem on 11/24/2015.
  */
-public class XMLPullParserHandler
+public class XMLPullParserHandler_bundle_Description
 {
 
-    List<bundles> bundle_vals;
-    private bundles bundle_class;
+    List<bundle_description_class> bundle_vals;
+    private bundle_description_class bundle_class;
     private String text;
 
-    public XMLPullParserHandler()
+    public XMLPullParserHandler_bundle_Description()
     {
-        bundle_vals = new ArrayList<bundles>();
+        bundle_vals = new ArrayList<bundle_description_class>();
     }
 
-    public List<bundles> parse(InputStream is)
+    public List<bundle_description_class> parse(InputStream is)
     {
 
         XmlPullParserFactory factory = null;
@@ -46,7 +46,7 @@ public class XMLPullParserHandler
 
                         if(tagname.equalsIgnoreCase("bundle"))
                         {
-                            bundle_class = new bundles();
+                            bundle_class = new bundle_description_class();
                         }
                         break;
 

@@ -3,7 +3,7 @@ package suleman.martin.com.service;
 /**
  * Created by sulem on 11/24/2015.
  */
-public class bundles {
+public class bundle_description_class {
 
     private String bundle_description;
     private String bundle_value;

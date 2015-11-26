@@ -1,6 +1,6 @@
 package suleman.martin.com.service;
 
-public class bundle_values
+public class bundle_values_class
 {
 
     private String bundle_value;
