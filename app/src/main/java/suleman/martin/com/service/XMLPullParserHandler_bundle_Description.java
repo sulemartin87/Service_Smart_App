@@ -14,7 +14,9 @@ public class XMLPullParserHandler_bundle_Description
 {
 
     List<bundle_description_class> bundle_vals;
+    List<carrier_colors_class> color_value;
     private bundle_description_class bundle_class;
+    private carrier_colors_class carrier_color_class;
     private String text;
 
     public XMLPullParserHandler_bundle_Description()
@@ -79,4 +81,8 @@ public class XMLPullParserHandler_bundle_Description
         return bundle_vals;
     }
 
+
+
 }
+
+

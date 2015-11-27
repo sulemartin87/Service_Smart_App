@@ -2,13 +2,17 @@ package suleman.martin.com.service;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -36,25 +40,43 @@ public class MainActivity extends AppCompatActivity
         show_main_list();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.info, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_info)
+        {
+            info();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void show_main_list()
     {
         first_list_view = (ListView) findViewById(R.id.main_listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>
                 (this, android.R.layout.simple_list_item_1, android.R.id.text1, main_list);
-        first_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        first_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int itemPosition = position;
                 String itemValue = (String) first_list_view.getItemAtPosition(position);
                 // Show Alert
-                if (position == 0)
-                {
+                if (position == 0) {
                     launch_service();
-                }
-                else
-                {
+                } else {
                     launch_internet();
                 }
             }
@@ -102,6 +124,23 @@ public class MainActivity extends AppCompatActivity
                         statusBar.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                         statusBar.setStatusBarColor(Color.parseColor("#DB030C"));
                     }
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Carrier Not Supported Yet");
+                    builder.setMessage("Sorry :'/.. we promise we'll get to it \n click on one of the menu items to select an available carrier manually" );
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                    {
+
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+
+                            dialog.dismiss();
+                        }
+
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 }
                 break;
             case TelephonyManager.SIM_STATE_UNKNOWN:
@@ -118,5 +157,14 @@ public class MainActivity extends AppCompatActivity
     {
         Intent intent = new Intent(this, internet.class);
         startActivity(intent);
+    }
+
+    public void info() {
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+        dlgAlert.setMessage("Application Created By Martin Suleman");
+        dlgAlert.setTitle("Information");
+        dlgAlert.setPositiveButton("OK", null);
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
     }
 }
