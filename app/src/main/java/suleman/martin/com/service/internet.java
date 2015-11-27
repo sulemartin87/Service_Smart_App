@@ -45,8 +45,6 @@ public class internet extends AppCompatActivity
         setSupportActionBar(toolbar);
         simStuff();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -258,11 +256,8 @@ public class internet extends AppCompatActivity
     {
         try
         {
-            final XMLPullParserHandler_carrier_color parser = new XMLPullParserHandler_carrier_color();
-            colors = parser.parse_color(getAssets().open((carrier + ".xml")));
-            System.out.println(colors);
-            String b = String.valueOf(colors.get(0));
-            System.out.println("we here mate" + b);
+            String b = new color_task().execute(carrier).get();
+            System.out.println(b);
             show_bundles(carrier);
             actionBar.setTitle(carrier);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(b)));
@@ -273,7 +268,7 @@ public class internet extends AppCompatActivity
                 statusBar.setStatusBarColor(Color.parseColor(b));
             }
 
-        } catch (java.io.IOException e)
+        } catch (Exception e)
         {
             actionBar.setTitle("carrier not supported Yet!");
             System.out.println("XML not found");
