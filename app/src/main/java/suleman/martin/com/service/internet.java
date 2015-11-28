@@ -204,11 +204,11 @@ public class internet extends AppCompatActivity
                 {
                     if (item .equals("Airtel MW"))
                     {
-                     getColor("Airtel MW", actionBar);
+                     setColor("Airtel MW", actionBar);
                     }
                     else if(item.equals("TNM"))
                     {
-                        getColor("TNM", actionBar);
+                        setColor("TNM", actionBar);
                     }
                 }
             }
@@ -257,7 +257,6 @@ public class internet extends AppCompatActivity
         try
         {
             String b = new color_task().execute(carrier).get();
-            System.out.println(b);
             show_bundles(carrier);
             actionBar.setTitle(carrier);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(b)));
@@ -275,21 +274,34 @@ public class internet extends AppCompatActivity
             addItemsOnSpinner();
         }
     }
+
+    public void info() {
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+        dlgAlert.setMessage("Application Created By Martin Suleman");
+        dlgAlert.setTitle("Information");
+        dlgAlert.setPositiveButton("OK", null);
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
+    }
     private class color_task extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
             String s = params[0];
-            try
-            {
+            String b = null;
+            try {
                 final XMLPullParserHandler_carrier_color parser = new XMLPullParserHandler_carrier_color();
-                colors = parser.parse_color(getAssets().open(( s + ".xml")));
-            }catch (IOException e) {
+                colors = parser.parse_color(getAssets().open((s + ".xml")));
+                b = String.valueOf(colors.get(0));
+                System.out.println(b);
+            } catch (IOException e) {
                 System.out.println("XML not found bruuhhh");
+            } finally {
+                return b;
             }
-            String b = String.valueOf(colors.get(0));
-            System.out.println(b);
-            return b;
+
+
+
         }
 
         @Override
@@ -305,13 +317,6 @@ public class internet extends AppCompatActivity
         protected void onProgressUpdate(Void... values) {}
     }
 
-    public void info() {
-        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-        dlgAlert.setMessage("Application Created By Martin Suleman");
-        dlgAlert.setTitle("Information");
-        dlgAlert.setPositiveButton("OK", null);
-        dlgAlert.setCancelable(true);
-        dlgAlert.create().show();
-    }
+
 
 }
