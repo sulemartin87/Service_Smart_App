@@ -98,6 +98,8 @@ public class internet extends AppCompatActivity
 
                 finish();
                 startActivity(intent);
+                Toast.makeText(getApplicationContext(), "Dual Sim Mode Activated",
+                        Toast.LENGTH_SHORT).show();
                 System.out.println("duos mode enabled");
                 item.setTitle("disable duos mode");
 
@@ -107,6 +109,8 @@ public class internet extends AppCompatActivity
                 Intent intent = getIntent();
                 finish();
                 startActivity(intent);
+                Toast.makeText(getApplicationContext(), "Dual Sim Mode DeActivated",
+                        Toast.LENGTH_SHORT).show();
                 System.out.println("duos mode disabled");
                 item.setTitle("disable duos mode");
 

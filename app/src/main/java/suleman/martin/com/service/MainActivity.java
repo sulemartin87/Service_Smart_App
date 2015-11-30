@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -52,7 +53,8 @@ public class MainActivity extends AppCompatActivity
         System.out.println(dual_sim_mode);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (android.os.Build.VERSION.SDK_INT >= 11) {
+        if (android.os.Build.VERSION.SDK_INT >= 11)
+        {
             new main_activity_task().executeOnExecutor("");
         }else {
 
@@ -64,14 +66,33 @@ public class MainActivity extends AppCompatActivity
 
         show_main_list();
     }
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+
+        boolean in =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean("duos_mode", false);
+        if (in == false)
+        {
+            menu.findItem(R.id.dual_sim_mode).setTitle("enable duos mode");
+        }
+        else
+        {
+            menu.findItem(R.id.dual_sim_mode).setTitle("disable duos mode");
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.info, menu);
+
         return true;
     }
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -84,10 +105,36 @@ public class MainActivity extends AppCompatActivity
             info();
             return true;
         }
+        if (id == R.id.dual_sim_mode) {
+            boolean in = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("duos_mode", false);
+            if (in == false) {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("duos_mode", true).apply();
+                Intent intent = getIntent();
+                startActivity(intent);
+
+                Toast.makeText(getApplicationContext(), "Dual Sim Mode Activated",
+                        Toast.LENGTH_SHORT).show();
+                System.out.println("duos mode enabled");
+                item.setTitle("disable duos mode");
 
 
+            } else {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("duos_mode", false).apply();
+                Intent intent = getIntent();
+                startActivity(intent);
+
+                Toast.makeText(getApplicationContext(), "Dual Sim Mode DeActivated",
+                        Toast.LENGTH_SHORT).show();
+                System.out.println("duos mode disabled");
+                item.setTitle("disable duos mode");
+
+            }
+
+        }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     public void show_main_list()
     {
