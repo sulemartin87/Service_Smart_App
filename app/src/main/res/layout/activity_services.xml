@@ -22,6 +22,17 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_service"
+        android:visibility="gone" />
 
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/service_list"
+        android:textAlignment="center"
+        android:smoothScrollbar="true" />
 
 </LinearLayout>

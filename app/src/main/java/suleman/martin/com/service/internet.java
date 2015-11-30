@@ -1,5 +1,6 @@
 package suleman.martin.com.service;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,7 +8,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +35,7 @@ public class internet extends AppCompatActivity
 {
 
     ListView internet_list;
-    Intent intent = new Intent(Intent.ACTION_CALL);
+
     List<bundle_description_class> bundle_description_internet = null;
     List<bundle_values_class> bundle_values_internet = null;
     List<carrier_colors_class> colors = null;
@@ -43,8 +46,9 @@ public class internet extends AppCompatActivity
         setContentView(R.layout.activity_internet);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        simStuff();
+        new main_activity_task().execute("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -53,6 +57,25 @@ public class internet extends AppCompatActivity
         getMenuInflater().inflate(R.menu.info, menu);
         return true;
     }
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+
+        boolean in =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean("duos_mode", false);
+        if (in == false)
+         {
+            menu.findItem(R.id.dual_sim_mode).setTitle("enable duos mode");
+         }
+        else
+         {
+            menu.findItem(R.id.dual_sim_mode).setTitle("disable duos mode");
+         }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -60,17 +83,44 @@ public class internet extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
         if (id == R.id.action_info)
         {
             info();
+            return true;
+        }
+        if (id == R.id.dual_sim_mode)
+        {
+            boolean in =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean("duos_mode", false);
+            if (in == false) {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("duos_mode",true).apply();
+                Intent intent = getIntent();
+
+                finish();
+                startActivity(intent);
+                System.out.println("duos mode enabled");
+                item.setTitle("disable duos mode");
+
+
+            }else {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("duos_mode",false).apply();
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+                System.out.println("duos mode disabled");
+                item.setTitle("disable duos mode");
+
+            }
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void show_bundles(final String carrier)
+    public void show_bundles(final String carrier,final Intent intent)
     {
+
         internet_list= (ListView) findViewById(R.id.main_bundle_list);
         try
         {
@@ -118,7 +168,7 @@ public class internet extends AppCompatActivity
 
         } catch (java.io.IOException e)
         {
-            e.printStackTrace();
+
             if (e.toString().equals( "java.io.FileNotFoundException:"))
             {
                 Toast.makeText(getApplicationContext(), "Error XML file not found", Toast.LENGTH_LONG).show();
@@ -129,38 +179,7 @@ public class internet extends AppCompatActivity
     }
 
 
-    public void simStuff()
-    {
-        ActionBar actionBar = getSupportActionBar();
-        TelephonyManager tManager = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-        int simState = tManager.getSimState();
-        switch (simState)
-        {
-            case TelephonyManager.SIM_STATE_ABSENT:
-                actionBar.setTitle("no sim card");
-                Toolbar tool = (Toolbar) findViewById(R.id.toolbar);
-                addItemsOnSpinner();
-                break;
 
-            case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
-                break;
-
-            case TelephonyManager.SIM_STATE_PIN_REQUIRED:
-                break;
-
-            case TelephonyManager.SIM_STATE_PUK_REQUIRED:
-                break;
-
-            case TelephonyManager.SIM_STATE_READY:
-                String mi = tManager.getSimOperatorName();
-                System.out.println(mi);
-                setColor(mi,actionBar);
-                break;
-
-            case TelephonyManager.SIM_STATE_UNKNOWN:
-                break;
-        }
-    }
 
     public String bruh(int posititon,String carrier)
     {
@@ -229,7 +248,14 @@ public class internet extends AppCompatActivity
 
             String b = new color_task().execute(carrier).get();
 
-            show_bundles(carrier);
+            boolean in =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean("duos_mode", false);
+            if (in == false) {
+                final Intent intent = new Intent(Intent.ACTION_CALL);
+                show_bundles(carrier,intent);
+            }else {
+                final Intent intent = new Intent(Intent.ACTION_DIAL);
+                show_bundles(carrier,intent);
+            }
             actionBar.setTitle(carrier);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(b)));
             if (android.os.Build.VERSION.SDK_INT >= 21)
@@ -254,20 +280,37 @@ public class internet extends AppCompatActivity
 
     public void setColor (String carrier,ActionBar actionBar)
     {
+        boolean in =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean("duos_mode", false);
+
+
         try
         {
             String b = new color_task().execute(carrier).get();
-            show_bundles(carrier);
+
+            if (in == false)
+            {
+                final Intent intent = new Intent(Intent.ACTION_CALL);
+                show_bundles(carrier,intent);
+            }
+            else
+            {
+                final Intent intent = new Intent(Intent.ACTION_DIAL);
+                show_bundles(carrier,intent);
+            }
+
             actionBar.setTitle(carrier);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(b)));
-            if (android.os.Build.VERSION.SDK_INT >= 21) {
+
+            if (android.os.Build.VERSION.SDK_INT >= 21)
+            {
                 Window statusBar = getWindow();
                 statusBar.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 statusBar.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 statusBar.setStatusBarColor(Color.parseColor(b));
             }
 
-        } catch (Exception e)
+        }
+            catch (Exception e)
         {
             actionBar.setTitle("carrier not supported Yet!");
             System.out.println("XML not found");
@@ -297,17 +340,16 @@ public class internet extends AppCompatActivity
             } catch (IOException e) {
                 System.out.println("XML not found bruuhhh");
             } finally {
+
                 return b;
             }
-
-
 
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            // might want to change "executed" for the returned string passed
-            // into onPostExecute() but that is upto you
+        protected void onPostExecute(String result)
+        {
+
         }
 
         @Override
@@ -318,5 +360,58 @@ public class internet extends AppCompatActivity
     }
 
 
+    private class main_activity_task extends AsyncTask<String, Void, String>
+    {
 
+        @Override
+        protected String doInBackground(String... params)
+        {
+            String s = params[0];
+            return s;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // might want to change "executed" for the returned string passed
+            // into onPostExecute() but that is upto you
+            simStuff();
+        }
+        public void simStuff()
+        {
+            ActionBar actionBar = getSupportActionBar();
+            TelephonyManager tManager = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+            int simState = tManager.getSimState();
+            switch (simState)
+            {
+                case TelephonyManager.SIM_STATE_ABSENT:
+                    actionBar.setTitle("no sim card");
+                    Toolbar tool = (Toolbar) findViewById(R.id.toolbar);
+                    addItemsOnSpinner();
+                    break;
+
+                case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
+                    break;
+
+                case TelephonyManager.SIM_STATE_PIN_REQUIRED:
+                    break;
+
+                case TelephonyManager.SIM_STATE_PUK_REQUIRED:
+                    break;
+
+                case TelephonyManager.SIM_STATE_READY:
+                    String mi = tManager.getSimOperatorName();
+                    System.out.println(mi);
+                    setColor(mi, actionBar);
+                    break;
+
+                case TelephonyManager.SIM_STATE_UNKNOWN:
+                    break;
+            }
+        }
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
 }
